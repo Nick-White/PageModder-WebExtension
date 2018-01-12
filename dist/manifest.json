@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2,
+	"name": "PageModder-WebExtension",
+	"version": "0.1",
+
+	"applications": {
+		"gecko": {
+			"id": "PageModder-WebExtension@email.com"
+		}
+	},
+
+	"options_ui": {
+		"open_in_tab": true,
+		"page": "options/options.html"
+	},
+	
+	"permissions": [
+		"<all_urls>",
+		"downloads",
+		"storage",
+		"tabs",
+		"webNavigation",
+		"webRequest",
+		"webRequestBlocking"
+	],
+	
+	"background": {
+		"scripts": ["main.js"]
+	},
+	
+	"web_accessible_resources": [
+	]
+}
