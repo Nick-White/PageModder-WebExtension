@@ -19,16 +19,13 @@ export class PageModCompiler {
 
     public static compile(mod: PageMod): CompiledPageMod {
         return {
-            startScript: this.compileScript(mod.startScript),
-            readyScript: this.compileScript(mod.readyScript, this.jQueryEscaped),
+            startScript: (typeof mod.startScript !== "undefined") ? this.compileScript(mod.startScript) : "",
+            readyScript: (typeof mod.readyScript !== "undefined") ? this.compileScript(mod.readyScript, this.jQueryEscaped) : "",
             style: mod.style
         }
     }
 
-    private static compileScript(script?: string, escapedPrefix?: string): string | undefined {
-        if (typeof script === "undefined") {
-            return undefined;
-        }
+    private static compileScript(script: string, escapedPrefix?: string): string {
         /*
         executeScript returns whatever the last statement inside the code returns, so I'll just add a null,
         otherwise it might try to return something that is not serializable (function etc.), and an error will be thrown.
