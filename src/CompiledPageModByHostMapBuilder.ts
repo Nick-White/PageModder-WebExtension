@@ -5,6 +5,10 @@ import { PageModCompiler } from "./PageModCompiler";
 
 export class CompiledPageModByHostMapBuilder {
 
+    public static init(): Promise<void> {
+        return PageModCompiler.init();
+    }
+
     public static build(mods: PageMod[]): Dictionary<string, CompiledPageMod> {
         let compiledModByHostMap: Dictionary<string, CompiledPageMod> = new Dictionary();
         mods.forEach((mod: PageMod) => {

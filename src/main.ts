@@ -16,8 +16,8 @@ let mod: PageMod = {
         }
     `,
     readyScript: `
-        var titleElement = document.querySelector(".js-issue-title");
-        titleElement.innerHTML = titleElement.innerHTML.trim() + " (MODDED)";
+        var titleElement = $(".js-issue-title");
+        titleElement.text(titleElement.text().trim() + " (MODDED)");
     `,
     style: `
         body {
@@ -29,5 +29,7 @@ let mod: PageMod = {
 let mods: PageMod[] = [];
 mods.push(mod);
 
-let compiledModByHostMap: Dictionary<string, CompiledPageMod> = CompiledPageModByHostMapBuilder.build(mods);
-PageModsListenerConfigurer.configure(compiledModByHostMap);
+CompiledPageModByHostMapBuilder.init().then((): void => {
+    let compiledModByHostMap: Dictionary<string, CompiledPageMod> = CompiledPageModByHostMapBuilder.build(mods);
+    PageModsListenerConfigurer.configure(compiledModByHostMap);
+});
