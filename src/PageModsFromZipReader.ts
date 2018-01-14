@@ -3,13 +3,14 @@ import { PageMod } from "./model/PageMod";
 import { JSZipObject } from "jszip";
 import Dictionary from "typescript-collections/dist/lib/Dictionary";
 import { DictionaryUtils } from "./utils/DictionaryUtils";
+import { HostFromRegExpExtractor } from "./HostFromRegExpExtractor";
+import { PageModsReferencesResolver } from "./PageModsReferencesResolver";
 
 export class PageModsFromZipReader {
 
-    private static readonly HOST_REG_EXP_AS_STRING = ".+?(?:\\..+?)+?";
-    private static readonly START_SCRIPT_FILE_NAME_REG_EXP = new RegExp("^(" + PageModsFromZipReader.HOST_REG_EXP_AS_STRING + ")\\.start\\.js$");
-    private static readonly READY_SCRIPT_FILE_NAME_REG_EXP = new RegExp("^(" + PageModsFromZipReader.HOST_REG_EXP_AS_STRING + ")\\.ready\\.js$");
-    private static readonly STYLE_FILE_NAME_REG_EXP = new RegExp("^(" + PageModsFromZipReader.HOST_REG_EXP_AS_STRING + ")\\.css$");
+    private static readonly START_SCRIPT_FILE_NAME_REG_EXP = new RegExp("^(" + HostFromRegExpExtractor.HOST_REG_EXP_AS_STRING + ")\\.start\\.js$");
+    private static readonly READY_SCRIPT_FILE_NAME_REG_EXP = new RegExp("^(" + HostFromRegExpExtractor.HOST_REG_EXP_AS_STRING + ")\\.ready\\.js$");
+    private static readonly STYLE_FILE_NAME_REG_EXP = new RegExp("^(" + HostFromRegExpExtractor.HOST_REG_EXP_AS_STRING + ")\\.css$");
 
     private readonly zip: JSZip;
 
@@ -50,6 +51,7 @@ export class PageModsFromZipReader {
                 fileContentPromises.push(fileContentPromise);
             });
             Promise.all(fileContentPromises).then((): void => {
+                new PageModsReferencesResolver(modByHostMap).resolve();
                 resolve(modByHostMap.values());
             });
         });
@@ -60,11 +62,7 @@ export class PageModsFromZipReader {
     }
 
     private getHost(regExp: RegExp, fileName: string): string | null {
-        let result: RegExpExecArray | null = regExp.exec(fileName);
-        if (result === null) {
-            return null;
-        }
-        return result[1];
+        return HostFromRegExpExtractor.extract(regExp, fileName);
     }
     
 }
